@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.Stack;
 
@@ -12,6 +14,19 @@ import java.util.Stack;
 
 public class PegSolitaire {
 
+	public class PegBoardComparator implements Comparator<PegBoard>
+	{
+	    public int compare(PegBoard First, PegBoard Second)
+	    {
+	        if (First.FScore < Second.FScore)
+	            return -1;
+	        if (First.FScore > Second.FScore)
+	            return 1;
+	        return 0;
+	    }
+	}
+	
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		PegSolitaire obj = new PegSolitaire();
@@ -26,17 +41,25 @@ public class PegSolitaire {
 			String input = reader.readLine();
 			input = input.replace(" ", "");
 			input = input.replace(",","");
-			PB = new PegBoard(input, "");			
+			PB = new PegBoard(input, "", 0);			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		Set<PegBoard> PBSet = new HashSet<PegBoard>();
-		Stack<PegBoard> PBStack = new Stack<PegBoard>();
-		PBStack.push(PB);
+		
+		Comparator<PegBoard> comparator = new PegBoardComparator();
+		PriorityQueue<PegBoard> PBQueue = 
+	            new PriorityQueue<PegBoard>(100, comparator);
+		
+		
+		
+		PBQueue.add(PB);
 		int flagPathFound = 0;
-		while(!PBStack.empty()) {
-			PegBoard temp = PBStack.pop();
+		
+		while(!PBQueue.isEmpty()) {
+			PegBoard temp = PBQueue.poll();
+			System.out.print("-POP-");
 			if (PBSet.contains(temp)) {
 				continue;
 			} else {
@@ -51,7 +74,7 @@ public class PegSolitaire {
 				ArrayList<PegBoard> config = temp.getNextConfig(); 
 				Collections.reverse(config);
 				for (PegBoard i: config) {
-					PBStack.push(i);
+					PBQueue.add(i);
 				}
 			}
 		}

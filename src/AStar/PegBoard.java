@@ -8,23 +8,35 @@ public class PegBoard {
 	private String CurrentConfig;
 	private String Moves="";
 	private String DesiredState = "--000----000--0000000000X0000000000--000----000--";
-	public int HueristicScore;
-	public int whichHueristic = 1;//1 or 2
+	public int HScore;
+	public int GScore;
+	public int FScore;
+	public int whichHueristic = 2;//1 or 2. 1 is more informed 2 is less informed
 	
 	
-	public PegBoard(String Config) {
+	
+	public PegBoard(String Config, int gscore) {
+		GScore = gscore;
 		CurrentConfig = Config;
 		if (whichHueristic == 1) 
-			HueristicScore = GetHueristicScore1();
+			HScore = GetHueristicScore1();
 		else 
-			HueristicScore = GetHueristicScore2();
+			HScore = GetHueristicScore2();
+		FScore = GScore + HScore;
 	}
 	
-	public PegBoard(String Config, String moves) {
+	public PegBoard(String Config, String moves, int gscore) {
+		GScore = gscore;
 		CurrentConfig = Config;
 		Moves = moves;
+		if (whichHueristic == 1) 
+			HScore = GetHueristicScore1();
+		else 
+			HScore = GetHueristicScore2();
+		FScore = GScore + HScore;
 	}
 
+	//This hueristic is more informed
 	public int GetHueristicScore1() { //first Hueristic Count Number of pebbles in board
 		int score = 0;
 		for (int i=0; i<CurrentConfig.length();i++) {
@@ -32,11 +44,14 @@ public class PegBoard {
 				score++;
 			}
 		}
-		return score;
+		return score-1; //-1 because the end state should always have score 0, in a admissible heuristic
+		//This hueristic will never over-estimate. Hence its an admissible Heuristic
 	}
 
-	public int GetHueristicScore2() {
-		
+	//This hueristic is less informed
+	public int GetHueristicScore2() { //This Hueristic estimates the number of possible moves
+		return getNextConfig().size();
+		//This heuristic is also an admissible one
 	}
 	
 	public int returnMapping(int index) {
@@ -83,7 +98,7 @@ public class PegBoard {
 			newConfig.setCharAt(index-2, 'X');
 			newConfig.setCharAt(index-1, '0');
 			String newMove = Moves+"("+new Integer(returnMapping(index)).toString()+","+new Integer(returnMapping(index-2)).toString()+"),";
-			PegBoard ret = new PegBoard(newConfig.toString(), newMove);
+			PegBoard ret = new PegBoard(newConfig.toString(), newMove, GScore + 1);
 			return ret;
 		}
 		else
@@ -100,7 +115,7 @@ public class PegBoard {
 			newConfig.setCharAt(index+2, 'X');
 			newConfig.setCharAt(index+1, '0');
 			String newMove = Moves+"("+new Integer(returnMapping(index)).toString()+","+new Integer(returnMapping(index+2)).toString()+"),";
-			PegBoard ret = new PegBoard(newConfig.toString(), newMove);
+			PegBoard ret = new PegBoard(newConfig.toString(), newMove, GScore + 1);
 			return ret;
 		}
 		else
@@ -117,7 +132,7 @@ public class PegBoard {
 			newConfig.setCharAt(index-14, 'X');
 			newConfig.setCharAt(index-7, '0');
 			String newMove = Moves+"(" + new Integer(returnMapping(index)).toString()+","+new Integer(returnMapping(index-14)).toString()+"),";
-			PegBoard ret = new PegBoard(newConfig.toString(), newMove);
+			PegBoard ret = new PegBoard(newConfig.toString(), newMove, GScore + 1);
 			return ret;
 		}
 		else
@@ -134,7 +149,7 @@ public class PegBoard {
 			newConfig.setCharAt(index+14, 'X');
 			newConfig.setCharAt(index+7, '0');
 			String newMove = Moves+"(" + new Integer(returnMapping(index)).toString()+","+new Integer(returnMapping(index+14)).toString()+"),";
-			PegBoard ret = new PegBoard(newConfig.toString(), newMove);
+			PegBoard ret = new PegBoard(newConfig.toString(), newMove, GScore + 1);
 			return ret;
 		}
 		else

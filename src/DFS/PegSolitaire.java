@@ -37,6 +37,7 @@ public class PegSolitaire {
 		int flagPathFound = 0;
 		while(!PBStack.empty()) {
 			PegBoard temp = PBStack.pop();
+			System.out.print("-POP-");
 			if (PBSet.contains(temp)) {
 				continue;
 			} else {
