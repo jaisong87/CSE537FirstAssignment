@@ -8,14 +8,35 @@ public class PegBoard {
 	private String CurrentConfig;
 	private String Moves="";
 	private String DesiredState = "--000----000--0000000000X0000000000--000----000--";
+	public int HueristicScore;
+	public int whichHueristic = 1;//1 or 2
+	
 	
 	public PegBoard(String Config) {
 		CurrentConfig = Config;
+		if (whichHueristic == 1) 
+			HueristicScore = GetHueristicScore1();
+		else 
+			HueristicScore = GetHueristicScore2();
 	}
 	
 	public PegBoard(String Config, String moves) {
 		CurrentConfig = Config;
 		Moves = moves;
+	}
+
+	public int GetHueristicScore1() { //first Hueristic Count Number of pebbles in board
+		int score = 0;
+		for (int i=0; i<CurrentConfig.length();i++) {
+			if (CurrentConfig.charAt(i) == 'X') {
+				score++;
+			}
+		}
+		return score;
+	}
+
+	public int GetHueristicScore2() {
+		
 	}
 	
 	public int returnMapping(int index) {
