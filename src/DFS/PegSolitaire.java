@@ -35,9 +35,10 @@ public class PegSolitaire {
 		Stack<PegBoard> PBStack = new Stack<PegBoard>();
 		PBStack.push(PB);
 		int flagPathFound = 0;
+		int popCounter = 0;
 		while(!PBStack.empty()) {
 			PegBoard temp = PBStack.pop();
-			System.out.print("-POP-");
+			popCounter++;
 			if (PBSet.contains(temp)) {
 				continue;
 			} else {
@@ -46,7 +47,8 @@ public class PegSolitaire {
 			if (temp.isEndState()) {
 				System.out.println(temp.getMoves());
 				flagPathFound = 1;
-				//System.exit(0);//If you remove this line then all the possible paths will be found 
+				System.out.println(popCounter);
+				System.exit(0);//If you remove this line then all the possible paths will be found 
 			}
 			else {
 				ArrayList<PegBoard> config = temp.getNextConfig(); 

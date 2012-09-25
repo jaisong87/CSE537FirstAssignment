@@ -53,13 +53,13 @@ public class PegSolitaire {
 	            new PriorityQueue<PegBoard>(100, comparator);
 		
 		
-		
 		PBQueue.add(PB);
 		int flagPathFound = 0;
-		
+		int popCounter = 0;
 		while(!PBQueue.isEmpty()) {
 			PegBoard temp = PBQueue.poll();
-			System.out.print("-POP-");
+			popCounter++;
+			System.out.println(popCounter);
 			if (PBSet.contains(temp)) {
 				continue;
 			} else {
@@ -68,7 +68,8 @@ public class PegSolitaire {
 			if (temp.isEndState()) {
 				System.out.println(temp.getMoves());
 				flagPathFound = 1;
-				//System.exit(0);//If you remove this line then all the possible paths will be found 
+				System.out.println(popCounter);
+				System.exit(0);//If you remove this line then all the possible paths will be found 
 			}
 			else {
 				ArrayList<PegBoard> config = temp.getNextConfig(); 

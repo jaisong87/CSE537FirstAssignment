@@ -11,7 +11,7 @@ public class PegBoard {
 	public int HScore;
 	public int GScore;
 	public int FScore;
-	public int whichHueristic = 2;//1 or 2. 1 is more informed 2 is less informed
+	public int whichHueristic = 1;//1 or 2. 1 is more informed 2 is less informed
 	
 	
 	
@@ -50,7 +50,7 @@ public class PegBoard {
 
 	//This hueristic is less informed
 	public int GetHueristicScore2() { //This Hueristic estimates the number of possible moves
-		return getNextConfig().size();
+		return getNextConfigSize();
 		//This heuristic is also an admissible one
 	}
 	
@@ -86,6 +86,59 @@ public class PegBoard {
 			
 		}
 		return PegList;
+	}
+	
+	public int getNextConfigSize() {
+		int moves = 0;
+		for (int i=0; i<CurrentConfig.length();i++) {
+			if (CurrentConfig.charAt(i) == 'X') {
+				if (leftMovePossible(i))
+					moves++;
+				if (rightMovePossible(i))
+					moves++;
+				if (upMovePossible(i))
+					moves++;
+				if (downMovePossible(i))
+					moves++;
+			}
+		}
+		return moves;
+	}
+	
+	boolean leftMovePossible(int index) {
+		if (index%7 == 0 || (index-1)%7 == 0) //leftmost cell - no left moves possible
+			return false;
+		if (CurrentConfig.charAt(index-2) == '0' && CurrentConfig.charAt(index-1) == 'X')
+			return true;
+		else
+			return false;
+	}
+	
+	boolean rightMovePossible(int index) {
+		if ((index+1)%7 == 0 || (index+2)%7 == 0) //rightmost cell - no right moves possible
+			return false;
+		if (CurrentConfig.charAt(index+2) == '0' && CurrentConfig.charAt(index+1) == 'X')
+			return true;
+		else
+			return false;
+	}
+	
+	boolean upMovePossible(int index) {
+		if (index - 14 < 0) 
+			return false;
+		if (CurrentConfig.charAt(index-14) == '0' && CurrentConfig.charAt(index-7) == 'X')
+			return true;
+		else
+			return false;
+	}
+	
+	boolean downMovePossible(int index) {
+		if (index + 14 > 46) 
+			return false;
+		if (CurrentConfig.charAt(index+14) == '0' && CurrentConfig.charAt(index+7) == 'X')
+			return true;
+		else
+			return false;
 	}
 	
 	PegBoard leftMove(int index) {
